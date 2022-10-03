@@ -1,0 +1,69 @@
+ALTER SESSION SET "_ORACLE_SCRIPT"=TRUE;
+
+CREATE TABLE SECCION (ID_SECCION NUMBER (9)
+                     ,NOMBRE VARCHAR2 (25)
+                     ,CONSTRAINT PK_SECCION PRIMARY KEY (ID_SECCION));
+                     
+CREATE TABLE MOTOR (ID_MOTOR NUMBER (9)
+                    ,CODIGO VARCHAR2 (25)
+                    ,POTENCIA NUMBER (5)
+                    ,CONSTRAINT PK_MOTOR PRIMARY KEY (ID_MOTOR));
+                    
+CREATE TABLE PIEZA (ID_PIEZA NUMBER (9)
+                    ,DESCRIPCION VARCHAR2 (100)
+                    ,PRECIO NUMBER (6,2)
+                    ,CONSTRAINT PK_PIEZA PRIMARY KEY (ID_PIEZA));
+                    
+CREATE TABLE TRABAJADOR (ID_TRABAJADOR NUMBER(9)
+                        ,DNI VARCHAR2(9)
+                        ,NOMBRE VARCHAR2 (25)
+                        ,APELLIDO_A VARCHAR2 (25)
+                        ,APELLIDO_B VARCHAR2 (25)
+                        ,ALTA VARCHAR2 (25)
+                        ,ID_SECCION NUMBER (9)
+                        ,CONSTRAINT PK_TRABAJADOR PRIMARY KEY (ID_TRABAJADOR)
+                        ,CONSTRAINT FK_SECCION FOREIGN KEY (ID_SECCION) REFERENCES SECCION(ID_SECCION)
+                        ,CONSTRAINT UQ_DNI UNIQUE(DNI));
+                        
+CREATE TABLE ENCARGO (ID_ENCARGO NUMBER (9)
+                     ,TAREA DATE
+                     ,ENTREGA DATE
+                     ,ID_MOTOR NUMBER (9)
+                     ,CONSTRAINT PK_ENCARGO PRIMARY KEY (ID_ENCARGO)
+                     ,CONSTRAINT FK_MOTOR FOREIGN KEY (ID_MOTOR) REFERENCES MOTOR(ID_MOTOR));
+                     
+CREATE TABLE FAENA (ID_FAENA NUMBER (9)
+                    ,HORAS NUMBER (4,2)
+                    ,ID_TRABAJADOR NUMBER (9)
+                    ,ID_ENCARGO NUMBER (9)
+                    ,CONSTRAINT PK_FAENA PRIMARY KEY (ID_FAENA)
+                    ,CONSTRAINT FK_TRABAJADOR FOREIGN KEY (ID_TRABAJADOR) REFERENCES TRABAJADOR(ID_TRABAJADOR)
+                    ,CONSTRAINT FK_ENCARGO FOREIGN KEY (ID_ENCARGO) REFERENCES TAREA(ID_ENCARGO));
+                    
+CREATE TABLE COLABORACION (ID_COLABORACION NUMBER (9)
+                          ,MAXIMO NUMBER (9)
+                          ,ID_SECCION NUMBER (9)
+                          ,ID_MOTOR NUMBER (9)
+                          ,CONSTRAINT PK_COLABORACION PRIMARY KEY (ID_COLABORACION)
+                          ,CONSTRAINT FK_SECCION FOREIGN KEY (ID_SECCION) REFERENCES SECCION(ID_SECCION)
+                          ,CONSTRAINT FK_MOTOR FOREIGN KEY (ID_MOTOR) REFERENCES MOTOR(ID_MOTOR));
+
+CREATE TABLE COMPOSICION (ID_COMPOSICION NUMBER (9)
+                          ,CANTIDAD NUMBER (9)
+                          ,ID_MOTOR NUMBER (9)
+                          ,ID_PIEZA NUMBER (9)
+                          ,CONSTRAINT PK_COMPOSICION PRIMARY KEY (ID_COMPOSICION)
+                          ,CONSTRAINT FK_MOTOR FOREIGN KEY (ID_MOTOR) REFERENCES MOTOR(ID_MOTOR)
+                          ,CONSTRAINT FK_PIEZA FOREIGN KEY (ID_PIEZA) REFERENCES PIEZA(ID_PIEZA));
+                          
+
+empresa
+componente
+transportista
+ciudad
+envase
+residuo
+composicion
+traslado
+
+                          
