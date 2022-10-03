@@ -1,0 +1,30 @@
+declare
+nuevaActualizacion ruta%rowtype;
+begin
+   nuevaActualizacion.ID_RUTA:=27;
+   nuevaActualizacion.NOMBRE:='INFRAMUNDO';
+   nuevaActualizacion.DESCRIPCION:='Es la nada';
+   nuevaActualizacion.VISITADA:=0;
+   crud_ruta.add_ruta(nuevaActualizacion);
+end;
+
+declare
+nuevaActualizacion ruta%rowtype;
+begin
+   nuevaActualizacion.ID_RUTA:=27;
+   nuevaActualizacion.NOMBRE:='INFRAMUNDO';
+   nuevaActualizacion.DESCRIPCION:='Es la nada';
+   nuevaActualizacion.VISITADA:=0;
+   crud_ruta.delete_ruta(27);
+end;
+
+declare
+nuevaActualizacion ruta%rowtype;
+poke ruta%rowtype;
+begin
+   poke.ID_RUTA:=27;
+   poke.NOMBRE:='INFRAMUNDO';
+   poke.DESCRIPCION:='Es la nada';
+   poke.VISITADA:=0;
+   crud_ruta.update_ruta(17, poke);
+end;

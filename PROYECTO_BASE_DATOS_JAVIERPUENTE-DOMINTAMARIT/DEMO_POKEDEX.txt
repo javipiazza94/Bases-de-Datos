@@ -1,0 +1,40 @@
+declare
+nuevaActualizacion pokedex%rowtype;
+begin
+   nuevaActualizacion.ID_POKEMON:=153;
+   nuevaActualizacion.NOMBRE:='Javi Pelos';
+   nuevaActualizacion.TIPO:='Hada';
+   nuevaActualizacion.DESCRIPCION:='Aspecto duro como el nabo de Nacho Vidal pero es blandito por dentro';
+   nuevaActualizacion.RATIO:=75;
+   nuevaActualizacion.VISTO:='si';
+   nuevaActualizacion.CAPTURA:='no';
+   crud_pokemon.add_pokemon(nuevaActualizacion);
+end;
+
+declare
+nuevaActualizacion pokedex%rowtype;
+begin
+   nuevaActualizacion.ID_POKEMON:=153;
+   nuevaActualizacion.NOMBRE:='Javi Pelos';
+   nuevaActualizacion.TIPO:='Hada';
+   nuevaActualizacion.DESCRIPCION:='Aspecto duro como el nabo de Nacho Vidal pero es blandito por dentro';
+   nuevaActualizacion.RATIO:=75;
+   nuevaActualizacion.VISTO:='si';
+   nuevaActualizacion.CAPTURA:='no';
+   crud_pokemon.delete_pokemon(153);
+end;
+
+declare
+nuevaActualizacion pokedex%rowtype;
+poke pokedex%rowtype;
+begin
+   poke.ID_POKEMON:=153;
+   poke.NOMBRE:='Javi Pelos';
+   poke.TIPO:='Hada';
+   poke.DESCRIPCION:='Aspecto duro como el nabo de Nacho Vidal pero es blandito por dentro';
+   poke.RATIO:=75;
+   poke.VISTO:='si';
+   poke.CAPTURA:='no';
+   crud_pokemon.update_pokemon(145, poke);
+end;
+

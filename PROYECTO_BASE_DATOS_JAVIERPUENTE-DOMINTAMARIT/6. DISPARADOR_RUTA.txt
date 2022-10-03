@@ -1,0 +1,14 @@
+create or replace trigger tr_add_update_and_delete_ruta
+before update or delete on ruta for each row 
+begin
+    if inserting
+    then  dbms_output.put_line('La nueva Ruta: '||:new.id_ruta||:new.nombre||:new.descripcion||:new.visitada|| ' ha sido añadida correctamente');
+    elsif : new.id_ruta<17
+    then  raise_application_error(-20000,'Esta ruta ya existe');
+    elsif updating
+    then  dbms_output.put_line('Nueva ruta: '||:new.id_ruta||:new.nombre||:new.descripcion||:new.visitada|| ' actualizada correctamente');
+    elsif deleting
+    then dbms_output.put_line('La ruta: '||:old.id_ruta|| ' ha sido eliminada correctamente');
+    end if;
+end;
+   

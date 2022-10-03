@@ -1,0 +1,11 @@
+create or replace trigger tr_add_update_and_delete_pokeball
+before update or delete on pokeball for each row 
+begin
+    if : new.id_pokeball<4
+    then  raise_application_error(-20000,'Esta pokeball ya existe');
+    elsif updating
+    then  dbms_output.put_line('Nueva Pokeball: '||:new.id_pokeball||:new.nombre||:new.descripcion||:new.ratio_captura|| ' actualizada correctamente');
+    elsif deleting
+    then dbms_output.put_line('La Pokeball: '||:old.id_pokeball|| ' ha sido eliminada correctamente');
+    end if;
+end;

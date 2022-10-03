@@ -1,0 +1,11 @@
+declare
+nuevaActualizacion obj_pokemon;
+nuevaActualizacion2 obj_ruta;
+nuevaActualizacion3 obj_pokeball;
+begin
+    nuevaActualizacion2.ID_RUTA:=1244;
+    nuevaActualizacion2.NOMBRE:='CALBOS CITY';
+    nuevaActualizacion2.DESCRIPCION:='Brilla como ninguna';
+    nuevaActualizacion2.VISITADA:='si';
+   nuevaActualizacion.add_ruta(nuevaActualizacion2);
+end;

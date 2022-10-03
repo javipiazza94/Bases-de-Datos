@@ -1,0 +1,12 @@
+create or replace trigger tr_add_update_and_delete_pokemon
+before update or delete on pokedex for each row 
+begin
+    if inserting
+    then  dbms_output.put_line('El nuevo Pokemon: '||:new.id_pokemon||:new.nombre||:new.tipo||:new.descripcion||:new.ratio||:new.visto||:new.captura|| ' ha sido añadido correctamente');
+    elsif updating
+    then  dbms_output.put_line('Nuevo Pokemon: '||:new.id_pokemon||:new.nombre||:new.tipo||:new.descripcion||:new.ratio||:new.visto||:new.captura|| ' Introducido correctamente');
+    elsif deleting
+    then dbms_output.put_line('El Pokemon: '||:old.id_pokemon|| ' ha sido eliminado correctamente');
+    end if;
+end;
+   

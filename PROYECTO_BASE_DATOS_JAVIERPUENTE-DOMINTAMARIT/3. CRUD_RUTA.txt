@@ -1,0 +1,64 @@
+create or replace package crud_ruta is
+procedure add_ruta (rute ruta%rowtype);
+function get_ruta (clave number) return ruta%rowtype;
+type lista_ruta is table of ruta%rowtype;
+function get_rutas return lista_ruta;
+procedure delete_ruta (clave number);
+procedure update_ruta (clave number, rute ruta%rowtype);
+end;
+
+create or replace package body crud_ruta is
+    procedure add_ruta (rute ruta%rowtype) is
+        begin
+        insert into ruta values rute;
+        exception
+            when dup_val_on_index then
+                raise_application_error(-20000,'Valor duplicado');
+        end add_ruta;
+
+    function get_ruta (clave number) return ruta%rowtype is
+        aux ruta%rowtype;
+        begin 
+        select * into aux from ruta where id_ruta = clave;
+        return aux;
+         exception
+         when no_data_found then
+                raise_application_error(-20000,'Valor no encontrado'); 
+        end get_ruta;
+
+    function get_rutas return lista_ruta is
+        cursor c_ruta is
+            select * from ruta order by id_ruta;
+        a_ruta lista_ruta := lista_ruta();
+        r_ruta ruta%rowtype;
+        begin
+        open c_ruta;
+            fetch c_ruta into r_ruta;
+            while c_ruta%found loop
+                a_ruta.extend;
+                a_ruta(a_ruta.last) := r_ruta;
+                fetch c_ruta into r_ruta;
+            end loop;
+        close c_ruta;
+        return a_ruta;
+    end get_rutas;
+
+    procedure delete_ruta (clave number) is
+    begin
+    delete from ruta where clave = id_ruta;
+     exception
+         when no_data_found then
+                raise_application_error(-20000,'Valor no encontrado'); 
+    end delete_ruta; 
+
+    procedure update_ruta (clave number, rute ruta%rowtype) is
+    begin
+    update ruta set nombre = nombre, descripcion = descripcion, visitada = visitada  where clave = id_ruta;
+     exception
+         when no_data_found then
+                raise_application_error(-20000,'Valor no encontrado'); 
+        when dup_val_on_index then
+                raise_application_error(-20000,'Valor duplicado');
+    end update_ruta;
+
+end;

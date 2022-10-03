@@ -1,0 +1,180 @@
+create type lista_rutas is table of obj_ruta;
+create type lista_pokeballs is table of obj_pokeball;
+
+CREATE OR REPLACE TYPE OBJ_POKEMON as object(
+ID_POKEMON number(22),
+NOMBRE varchar2(80),
+TIPO varchar2(100),
+DESCRIPCION varchar2(800),
+RATIO number(22),
+VISTO varchar2(8),
+CAPTURA varchar2(8),
+rutas lista_rutas,
+pokeballs lista_pokeballs,
+
+constructor function obj_pokemon(id_pokemon number, NOMBRE varchar2, TIPO varchar2, DESCRIPCION varchar2, RATIO number, VISTO varchar2, CAPTURA varchar2) return self as result,  
+
+member procedure add_ruta (nueva_ruta obj_ruta),
+member procedure add_pokeball (nueva_pokeball obj_pokeball),
+member procedure delete_pokeball (clave number),
+member procedure delete_ruta (clave number),
+member function get_pokeball (nueva_pokeball number) return obj_pokeball,
+member function get_ruta (nueva_ruta number) return obj_ruta,
+member procedure update_ruta (clave number, nueva_ruta obj_ruta),
+member procedure update_pokeball (clave number, nueva_pokeball obj_pokeball),
+map member function ordenPokemon return varchar2,
+member function contains_pokeball (clave number) return char,
+member function contains_ruta (clave number) return char
+
+);
+ 
+CREATE OR REPLACE TYPE BODY  OBJ_POKEMON as
+    constructor function obj_pokemon(id_pokemon number, NOMBRE varchar2, TIPO varchar2, DESCRIPCION varchar2, RATIO number, VISTO varchar2, CAPTURA varchar2)  return self as result is
+    begin
+        self.id_pokemon := id_pokemon;
+        self.nombre := nombre;
+        self.tipo := tipo;
+        self.descripcion := descripcion ;
+        self.ratio := ratio;
+        self.visto := visto;
+        self.captura := captura;
+        self.rutas := lista_rutas();
+        self.pokeballs := lista_pokeballs();
+        return;
+    end;
+
+--METODOS AMBAS LISTAS
+
+       member procedure add_ruta (nueva_ruta obj_ruta) is
+        begin
+            rutas.extend;
+            rutas(rutas.last) := nueva_ruta;
+            dbms_output.put_line('La nueva ruta ha sido añadida correctamente');
+            exception
+            when dup_val_on_index then
+                raise_application_error(-20000,'Valor duplicado');
+        end add_ruta;
+
+         member procedure add_pokeball (nueva_pokeball obj_pokeball) is
+        begin
+            pokeballs.extend;
+            pokeballs(pokeballs.last) := nueva_pokeball;
+            dbms_output.put_line('La nueva Pokeball ha sido añadida correctamente');
+            exception
+            when dup_val_on_index then
+                raise_application_error(-20000,'Valor duplicado');
+        end add_pokeball;
+
+       member procedure delete_ruta (clave number) is
+       begin
+            for i in 1..rutas.last loop
+                if rutas(i).id_ruta = clave then
+                 rutas.delete(i);
+                 dbms_output.put_line('La ruta ha sido borrada correctamente');
+                end if;
+            end loop;
+            exception
+             when no_data_found then
+            raise_application_error(-20000,'Valor no encontrado'); 
+        end delete_ruta;
+
+        member procedure delete_pokeball (clave number) is
+        begin
+            for i in 1..pokeballs.last loop
+                if pokeballs(i).id_pokeball = clave then
+                   pokeballs.delete(i);
+                   dbms_output.put_line('La pokeball ha sido borrada correctamente');
+                end if;
+            end loop;
+             exception
+             when no_data_found then
+            raise_application_error(-20000,'Valor no encontrado'); 
+        end delete_pokeball;
+
+        member function get_pokeball (nueva_pokeball number) return obj_pokeball is
+        begin
+            for i in 1..pokeballs.last loop
+                if pokeballs(i).id_pokeball = nueva_pokeball then
+                    return pokeballs(i);
+                end if;
+            end loop;
+              exception
+                when no_data_found then
+                raise_application_error(-20000,'Valor no encontrado');
+        end get_pokeball ;
+
+        member function get_ruta (nueva_ruta number) return obj_ruta is
+        begin
+            for i in 1..rutas.last loop
+                if rutas(i).id_ruta = nueva_ruta then
+                    return rutas(i);
+                end if;
+            end loop;
+             exception
+             when no_data_found then
+             raise_application_error(-20000,'Valor no encontrado');
+        end get_ruta;
+
+   
+        member procedure update_ruta (clave number, nueva_ruta obj_ruta) is
+        begin
+            for i in 1..rutas.last loop
+                if rutas(i).id_ruta = clave then
+                    rutas(i):=nueva_ruta;
+                    dbms_output.put_line('La nueva ruta ha sido modificada correctamente');
+                end if;
+            end loop;
+            exception
+            when no_data_found then
+                raise_application_error(-20000,'Valor no encontrado'); 
+            when dup_val_on_index then
+                raise_application_error(-20000,'Valor duplicado');
+        end update_ruta;
+
+        member procedure update_pokeball (clave number, nueva_pokeball obj_pokeball) is
+        begin
+            for i in 1..pokeballs.last loop
+                if pokeballs(i).id_pokeball = clave then
+                   pokeballs(i):=nueva_pokeball;
+                    dbms_output.put_line('La nueva Pokeball ha sido modificada correctamente');
+                end if;
+            end loop;
+            exception
+            when no_data_found then
+                raise_application_error(-20000,'Valor no encontrado'); 
+            when dup_val_on_index then
+                raise_application_error(-20000,'Valor duplicado');
+        end update_pokeball;
+
+        map member function ordenPokemon return varchar2 is
+        begin
+            return self.nombre;
+        end;
+
+        member function contains_pokeball (clave number) return char is
+        begin
+            for i in..pokeballs.last loop
+                if pokeballs(i).id_pokeball = clave then
+                    return 'Y';
+                    dbms_output.put_line('Esta Pokeball esta en nuestra base de datos');
+                else 
+                    return 'N';
+                    dbms_output.put_line('Esta Pokeball no esta en nuestra base de datos');
+                end if;
+            end loop;
+        end contains_pokeball;
+
+        member function contains_ruta (clave number) return char is
+        begin
+            for i in..rutas.last loop
+                if rutas(i).id_ruta = clave then
+                    return 'Y';
+                    dbms_output.put_line('Esta ruta esta en nuestra base de datos');
+                else 
+                    return 'N';
+                    dbms_output.put_line('Esta ruta no esta en nuestra base de datos');
+                end if;
+            end loop;
+        end contains_ruta;
+             
+end;

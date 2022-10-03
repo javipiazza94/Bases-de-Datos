@@ -1,0 +1,30 @@
+declare
+nuevaActualizacion pokeball%rowtype;
+begin
+   nuevaActualizacion.ID_POKEBALL:=6;
+   nuevaActualizacion.NOMBRE:='MAMABALL';
+   nuevaActualizacion.DESCRIPCION:='No pilla ni una, pero te la chupa que flipas';
+   nuevaActualizacion.RATIO_CAPTURA:=0;
+   crud_pokeball.add_pokeball(nuevaActualizacion);
+end;
+
+declare
+nuevaActualizacion pokeball%rowtype;
+begin
+   nuevaActualizacion.ID_POKEBALL:=6;
+   nuevaActualizacion.NOMBRE:='MAMABALL';
+   nuevaActualizacion.DESCRIPCION:='No pilla ni una, pero te la chupa que flipas';
+   nuevaActualizacion.RATIO_CAPTURA:=0;
+   crud_pokeball.delete_pokeball(6);
+end;
+
+declare
+nuevaActualizacion pokeball%rowtype;
+poke pokeball%rowtype;
+begin
+   poke.ID_POKEBALL:=6;
+   poke.NOMBRE:='MAMABALL';
+   poke.DESCRIPCION:='No pilla ni una, pero te la chupa que flipas';
+   poke.RATIO_CAPTURA:=0;
+   crud_pokeball.update_pokeball(4, poke);
+end;

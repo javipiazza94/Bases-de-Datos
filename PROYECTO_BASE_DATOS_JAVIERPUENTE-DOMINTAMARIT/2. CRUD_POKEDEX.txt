@@ -1,0 +1,64 @@
+create or replace package crud_pokemon is
+procedure add_pokemon (poke pokedex%rowtype);
+function get_pokemon (poke number) return pokedex%rowtype;
+type lista_pokedex is table of pokedex%rowtype;
+function get_pokemons return lista_pokedex;
+procedure delete_pokemon (clave number);
+procedure update_pokemon (clave number, poke pokedex%rowtype);
+end;
+
+create or replace package body crud_pokemon is
+    procedure add_pokemon (poke pokedex%rowtype) is
+        begin
+        insert into pokedex values poke;
+        exception
+        when dup_val_on_index then
+            raise_application_error(-20000,'Valor duplicado');
+        end add_pokemon;
+
+    function get_pokemon (poke number) return pokedex%rowtype is
+        aux pokedex%rowtype;
+        begin 
+        select * into aux from pokedex where id_pokemon = poke;
+        return aux;
+        exception
+        when no_data_found then
+            raise_application_error(-20000,'Valor no encontrado');
+        end get_pokemon;
+
+    function get_pokemons return lista_pokedex is
+        cursor c_pokemon is
+            select * from pokedex order by id_pokemon;
+        a_pokemon lista_pokedex;
+        r_pokemon pokedex%rowtype;
+        begin
+        open c_pokemon;
+            fetch c_pokemon into r_pokemon;
+            while c_pokemon%found loop
+                a_pokemon.extend;
+                a_pokemon(a_pokemon.last) := r_pokemon;
+                fetch c_pokemon into r_pokemon;
+            end loop;
+        close c_pokemon;
+        return a_pokemon;
+    end get_pokemons;
+
+    procedure delete_pokemon (clave number) is
+    begin
+    delete from pokedex where clave = id_pokemon;
+    exception
+        when no_data_found then
+            raise_application_error(-20000,'Valor no encontrado');
+    end delete_pokemon; 
+
+    procedure update_pokemon (clave number, poke pokedex%rowtype) is
+    begin
+    update pokedex set nombre = poke.nombre, descripcion = poke.descripcion, ratio = poke.ratio, visto = poke.visto, captura = poke.captura where clave = id_pokemon;
+    exception
+        when no_data_found then
+            raise_application_error(-20000,'Valor no encontrado');
+        when dup_val_on_index then
+            raise_application_error(-20000,'Valor duplicado');  
+    end update_pokemon;
+
+end;

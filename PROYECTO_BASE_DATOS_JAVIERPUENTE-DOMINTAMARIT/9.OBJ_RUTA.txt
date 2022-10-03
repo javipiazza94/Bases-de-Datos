@@ -1,0 +1,6 @@
+CREATE OR REPLACE  TYPE  obj_rutas as object(
+ID_RUTA number(22),
+NOMBRE varchar2(80),
+DESCRIPCION varchar2(800),
+VISITADA varchar2(8)
+);

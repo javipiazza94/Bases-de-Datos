@@ -1,0 +1,65 @@
+create or replace package crud_pokeball is
+procedure add_pokeball (bola pokeball%rowtype);
+function get_pokeball (bola number) return pokeball%rowtype;
+type lista_pokeball is table of pokeball%rowtype;
+function get_pokeballs return lista_pokeball;
+procedure delete_pokeball (clave number);
+procedure update_pokeball (clave number, bola pokeball%rowtype);
+end;
+
+create or replace package body crud_pokeball is
+    procedure add_pokeball (bola pokeball%rowtype) is
+        begin
+        insert into pokeball values bola;
+        exception
+            when dup_val_on_index then
+                raise_application_error(-20000,'Valor duplicado');
+        end add_pokeball;
+
+    function get_pokeball (bola number) return pokeball%rowtype is
+        aux pokeball%rowtype;
+        begin 
+        select * into aux from pokeball where id_pokeball = bola;
+        return aux;
+        exception
+         when no_data_found then
+                raise_application_error(-20000,'Valor no encontrado'); 
+        end get_pokeball;
+
+    function get_pokeballs return lista_pokeball is
+        cursor c_pokeball is
+            select * from pokeball order by id_pokeball;
+        a_pokeball lista_pokeball := lista_pokeball();
+        r_pokeball pokeball%rowtype;
+        begin
+        open c_pokeball;
+            fetch c_pokeball into r_pokeball;
+            while c_pokeball%found loop
+                a_pokeball.extend;
+                a_pokeball(a_pokeball.last) := r_pokeball;
+                fetch c_pokeball into r_pokeball;
+            end loop;
+        close c_pokeball;
+        return a_pokeball;
+    end get_pokeballs;
+
+    procedure delete_pokeball (clave number) is
+    begin
+    delete from pokeball where clave = id_pokeball;
+    exception
+    when no_data_found then
+                raise_application_error(-20000,'Valor no encontrado'); 
+    end delete_pokeball;
+    
+
+    procedure update_pokeball (clave number, bola pokeball%rowtype) is
+    begin
+    update pokeball set nombre = nombre,descripcion = descripcion, ratio_captura = ratio_captura where clave = id_pokeball;
+    exception
+            when dup_val_on_index then
+                raise_application_error(-20000,'Valor duplicado');
+            when no_data_found then
+                raise_application_error(-20000,'Valor no encontrado');
+    end update_pokeball;
+
+end;
