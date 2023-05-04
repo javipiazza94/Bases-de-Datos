@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+#Son datos bidimensionales, con filas y columnas (tablas)
 #Usando un diccionario de series
 d = {'col1': pd.Series([1., 2., 3., 4.]),
     'col2': pd.Series([4., 3., 2., 1.])}
