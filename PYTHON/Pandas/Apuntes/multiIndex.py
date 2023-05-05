@@ -60,7 +60,7 @@ dataset.loc[:,[('Columnas_importantes','City'),('Columnas_importantes','Age')]]
 _ = dataset.head(5).T
 _.index
 
-# Ordenamos el DataFrame por el nivel 0 de nuestro MultiIndex de las columnas
+# Ordenamos el DataFrame por el nivel 0 de nuestro MultiIndex de las columnas (columnas importantes). Con inplace se guardan los cambios
 dataset.sort_index(level=0, axis = 1).head()
 
 # Ordenamos el DataFrame por el nivel 1 de nuestro MultiIndex de las columnas
