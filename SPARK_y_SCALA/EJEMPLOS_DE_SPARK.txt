@@ -1,0 +1,145 @@
+ VER DATOS EN SPARK
+
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 3.3.2
+      /_/
+
+Using Scala version 2.12.15 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_202)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> 23/03/30 10:34:47 WARN ProcfsMetricsGetter: Exception when trying to compute pagesize, as a result reporting of ProcessTree metrics is stopped
+val df=spark.read.format("csv").option("header","true").load("C:/Users/javier.puente.ext/Documents/SPARK/curso_sparksql-master/FicherosEjemplo/Sueldos.csv")
+df: org.apache.spark.sql.DataFrame = [Nombre: string, Sexo: string ... 2 more fields]
+
+scala>
+
+scala> df.show
++---------+----+----+------+
+|   Nombre|Sexo|Edad|Sueldo|
++---------+----+----+------+
+|     Hugo|   M|  18| 19000|
+|    Lucas|   M|  18| 19000|
+|   Martín|   M|  22| 24000|
+|    Sofía|   F|  24| 21000|
+|    Mateo|   M|  31| 32000|
+|   Daniel|   M|  35| 32000|
+|    María|   F|  35| 36000|
+|Alejandro|   M|  50| 63000|
+|    Pablo|   M|  57| 50000|
+|    Lucía|   F|  52| 50000|
++---------+----+----+------+
+
+-------------------------------------------------------------------------------------------------
+
+
+scala> import org.apache.spark.sql.types.{StructType, StructField, StringType, IntegerType}
+import org.apache.spark.sql.types.{StructType, StructField, StringType, IntegerType}
+
+scala> val esquemaPersonalizado = StructType(Array(StructField("Nombre", StringType),StructField("Sexo", StringType),StructField("Edad", IntegerType),StructField("Salario", IntegerType)))
+esquemaPersonalizado: org.apache.spark.sql.types.StructType = StructType(StructField(Nombre,StringType,true),StructField(Sexo,StringType,true),StructField(Edad,IntegerType,true),StructField(Salario,IntegerType,true))
+
+scala> val esquemadf= spark.read.format("csv").schema(esquemaPersonalizado).option("header","true").load("C:/Users/javier.puente.ext/Documents/SPARK/curso_sparksql-master/FicherosEjemplo/Sueldos.csv")
+esquemadf: org.apache.spark.sql.DataFrame = [Nombre: string, Sexo: string ... 2 more fields]
+
+scala> esquemadf.show
+23/03/30 11:04:02 WARN CSVHeaderChecker: CSV header does not conform to the schema.
+ Header: Nombre, Sexo, Edad, Sueldo
+ Schema: Nombre, Sexo, Edad, Salario
+Expected: Salario but found: Sueldo
+CSV file: file:///C:/Users/javier.puente.ext/Documents/SPARK/curso_sparksql-master/FicherosEjemplo/Sueldos.csv
++---------+----+----+-------+
+|   Nombre|Sexo|Edad|Salario|
++---------+----+----+-------+
+|     Hugo|   M|  18|  19000|
+|    Lucas|   M|  18|  19000|
+|   Martín|   M|  22|  24000|
+|    Sofía|   F|  24|  21000|
+|    Mateo|   M|  31|  32000|
+|   Daniel|   M|  35|  32000|
+|    María|   F|  35|  36000|
+|Alejandro|   M|  50|  63000|
+|    Pablo|   M|  57|  50000|
+|    Lucía|   F|  52|  50000|
++---------+----+----+-------+
+
+scala> esquemadf.printSchema
+root
+ |-- Nombre: string (nullable = true)
+ |-- Sexo: string (nullable = true)
+ |-- Edad: integer (nullable = true)
+ |-- Salario: integer (nullable = true)
+
+*--------------------------------------------------------------------------------------------------------
+
+Guardar
+esquemadf.write.format("parquet").save("C:/Users/javier.puente.ext/Desktop/carpetaParquet")
+
+-----------------------------------------------------------------------------------------------------------
+Leer parquet y guardar como json
+val df2=spark.read.format("parquet").
+load("C:/Users/javier.puente.ext/Desktop/carpetaParquet")
+df2.show
+df2.write.format("json").save("C:/Users/javier.puente.ext/Desktop/carpetaParquet")
+
+--------------------------------------------------------------------------------------------------------------
+scala> val estaturas=Seq(("mujer",160),("mujer",163),("mujer",165),
+     | ("mujer",167),("mujer",171),("hombre",166),("hombre",171),
+     | ("hombre",172), ("hombre",175),("hombre",180))
+estaturas: Seq[(String, Int)] = List((mujer,160), (mujer,163), (mujer,165), (mujer,167), (mujer,171), (hombre,166), (hombre,171), (hombre,172), (hombre,175), (hombre,180))
+scala> tablaEstaturas.show
++------+------+
+|  sexo|altura|
++------+------+
+| mujer|   160|
+| mujer|   163|
+| mujer|   165|
+| mujer|   167|
+| mujer|   171|
+|hombre|   166|
+|hombre|   171|
+|hombre|   172|
+|hombre|   175|
+|hombre|   180|
++------+------+
+
+Media de alturas para toda la tabla y por sexo
+
+scala> tablaEstaturas.groupBy().mean("altura").show
++-----------+
+|avg(altura)|
++-----------+
+|      169.0|
++-----------+
+
+
+scala> tablaEstaturas.groupBy("sexo").mean("altura").show
++------+-----------+
+|  sexo|avg(altura)|
++------+-----------+
+| mujer|      165.2|
+|hombre|      172.8|
++------+-----------+
+
+
+scala> tablaEstaturas.groupBy("sexo").agg(mean("altura")
+     | .as("aturaMedia")).show
++------+----------+
+|  sexo|aturaMedia|
++------+----------+
+| mujer|     165.2|
+|hombre|     172.8|
++------+----------+
+
+Mediana de altura
+scala> val mediana=tablaEstaturas.stat.approxQuantile("altura",Array(0.5),0.2)
+mediana: Array[Double] = Array(167.0)
+
+--------------------------------------------------------------------------------------------
+
+
+
+

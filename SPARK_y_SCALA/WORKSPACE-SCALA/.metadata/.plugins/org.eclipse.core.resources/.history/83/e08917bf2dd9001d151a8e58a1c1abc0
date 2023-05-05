@@ -1,0 +1,5 @@
+package curso.openwebinar.twitter
+
+object hastags extends App {
+  
+}

@@ -1,0 +1,22 @@
+package curso.openwebinar.twitter
+
+import org.apache.spark.streaming.StreamingContext
+import org.apache.spark.streaming.Seconds
+import org.apache.spark.streaming.twitter.TwitterUtils
+import java.util.Date
+
+//Mostrar los 10 tuits de los usuarios con mas seguidores y los mostramos en un fichero en 90s
+
+object Ejercicio_2 extends App {
+  
+  System.setProperty("twitter4j.oauth.consumerKey", "ZcXWqs5FvPcefZZzoO4QXEuHe")
+  System.setProperty("twitter4j.oauth.consumerSecret", "H4gDoPktQD5swklL9QxUKjuJzut5c6oWXPAczbwjaIZwUKXyFM")
+  System.setProperty("twitter4j.oauth.accessToken", "1345214701-305Vm2rdTpg30IafUMYNRZx3cOZ4td1wcgiScnq")
+  System.setProperty("twitter4j.oauth.accessTokenSecret", "tyf6U3bJijSypSQT4l2hm2xx3OshBTMJ9ZuwkqmNaFWIv")
+
+  val StreamContext = new StreamingContext("local[*]", "T10", Seconds(30))
+  val tweets = TwitterUtils.createStream(StreamContext, None)
+  val tweetsWindow = tweets.window(Seconds(60))
+  case class Tweet (created_at: Date, usuario: String, texto:String, seguidores: Int)
+  
+}
